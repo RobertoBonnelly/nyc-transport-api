@@ -1,7 +1,7 @@
 use axum::{Json, http::{StatusCode}, extract::State};
 use std::sync::Arc;
 use sqlx::PgPool;
-use crate::model::{User,NewUser};
+use crate::users::model::{User,NewUser};
 
 pub async fn create_user (
     State(pool): State<Arc<PgPool>>,
@@ -16,7 +16,7 @@ pub async fn create_user (
         "#,
         payload.name,
         payload.email
-    ).fetch_one(&pool)
+    ).fetch_one(&*pool)
     .await
     .map_err(|err| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, err.to_string()))?;
 
