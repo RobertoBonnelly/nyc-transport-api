@@ -3,7 +3,7 @@ use std::env;
 use axum::{routing::get, Router};
 use std::net::SocketAddr;
 use axum_server;
-use sqlx::{database, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions};
 
 #[tokio::main]
 async fn main(){
@@ -14,7 +14,7 @@ async fn main(){
     // print to console
     println!("DATABASE_URL: {}", database_url);
     // connect to actual database
-    let pool = PgPoolOptions::new().max_connections(5)
+    let _pool = PgPoolOptions::new().max_connections(5)
     .connect(&database_url)
     .await
     .expect("Could not connect to database");
