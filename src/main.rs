@@ -1,12 +1,12 @@
 use dotenvy::dotenv;
 use std::sync::Arc;
 use std::env;
-use axum::{routing::{get, post}, Router};
+use axum::{routing::{get, post, put, delete}, Router};
 use std::net::SocketAddr;
 use axum_server;
 use sqlx::{postgres::PgPoolOptions};
 mod users;
-use users::handler::create_user;
+use users::handler::{create_user, update_user, delete_user};
 
 #[tokio::main]
 async fn main(){
@@ -24,7 +24,11 @@ async fn main(){
     // Define app variable with root route getting "Hello, Rust"
     let app = Router::new().route("/", get(|| async { "Hello, Rust!" }))
     .merge(Router::new().route("/createUser", post(create_user))
-    .with_state(pool));
+    .with_state(pool.clone()))
+    .merge(Router::new().route("/updateUser", put(update_user))
+    .with_state(pool.clone()))
+    .merge(Router::new().route("/deleteUser", delete(delete_user))
+    .with_state(pool.clone()));
 
     // Define SocketAddr to localhost(127.0.0.1):3000
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
